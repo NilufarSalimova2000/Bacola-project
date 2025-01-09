@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import { HeaderTop } from "./components/header-top";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,9 +8,21 @@ import { SearchIcon } from "@/assets/icons/serach-icon";
 import { UserIcon } from "@/assets/icons/user-icon";
 import { CartIcon } from "@/assets/icons/cart-icon";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "../ui/dropdown-menu";
+import fetchWrapper from "@/config/fetch-wrapper";
+import { CategoryType } from "@/service/types/type";
 
 
 export const Header = () => {
+    const [categories, setCategories] = useState<CategoryType[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const data = await fetchWrapper<CategoryType[]>("/category"); // Backenddan kategoriya ma'lumotlarini olish
+            setCategories(data); // Olingan ma'lumotlarni statega saqlash
+        };
+
+        fetchCategories();
+    }, []);
     return (
         <header className="border-b-[1px] border-b-[#E3E4E6] pb-[20px]">
             <HeaderTop />
@@ -48,10 +61,9 @@ export const Header = () => {
                         <DropdownMenuTrigger className="w-[214px] bg-[#2BBEF9] rounded-[50px] text-[#fff] text-[15px] py-[15px] border-none outline-none">ALL CATEGORIES</DropdownMenuTrigger>
                         <DropdownMenuContent className="w-[250px] mt-[16px] left-0 rounded-none">
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Profile</DropdownMenuItem>
-                            <DropdownMenuItem>Billing</DropdownMenuItem>
-                            <DropdownMenuItem>Team</DropdownMenuItem>
-                            <DropdownMenuItem>Subscription</DropdownMenuItem>
+                            {categories?.results?.map((category:any) => (
+                                <Link href={"/category"}><DropdownMenuItem key={category.id}>{category.title}</DropdownMenuItem></Link>
+                            ))}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
