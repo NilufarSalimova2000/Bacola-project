@@ -25,3 +25,13 @@ export interface CategoryType {
         parent: number;
     }[];
 };
+
+export interface ProductType {
+      id: number,
+      image: string,
+      title: string,
+      price: string,
+      is_available: boolean,
+      category: number,
+      is_new: boolean
+  }
